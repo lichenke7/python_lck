@@ -9,6 +9,9 @@ class RequestConfig:
     def get_cookie(self):
         return self.__cookie
 
+    def get_user_agent(self):
+        return self.__user_agent
+
     def get_headers(self, cookie=None, custom_headers=None):
         cookie = self.__cookie if cookie is None else cookie
         headers = {

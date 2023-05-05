@@ -1,3 +1,6 @@
+from utils import time_tools
+
+
 def handle_common_params(basic_url, first_params, second_params=None):
     print('handle common params')
     complete_params = first_params
@@ -55,4 +58,13 @@ def get_blog_image_params(url, pid):
     params = {
         'pid': pid
     }
+    return handle_common_params(url, params)
+
+
+def get_sign_topic_params(url, user_agent, topic_id):
+    time = time_tools.get_timestamp()
+    params = {'ajwvr': '6', 'api': 'http://i.huati.weibo.com/aj/super/checkin', 'texta': '签到', 'textb': '已签到',
+              'status': '0', 'id': topic_id, 'location': 'page_100808_super_index', 'timezone': 'GMT+0800',
+              'lang': 'zh-cn', 'plat': 'MacIntel', 'ua': user_agent, 'screen': '1440*900', '__rnd': str(time)}
+
     return handle_common_params(url, params)

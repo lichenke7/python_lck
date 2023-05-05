@@ -45,5 +45,6 @@ report = {
 # -------------------------------------------sign super topic-----------------------------------------------------------
 # TODO
 sign_topic = {
-
+    'method': 'get',
+    'url': lck_constants.sign_topic_url
 }
