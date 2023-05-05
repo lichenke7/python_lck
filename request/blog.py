@@ -1,31 +1,18 @@
-import time
+from abc import ABC
 
+from request.super_request import SuperRequest
 from utils import constants, param_tools, time_tools
-from local import lck_constants, save_tools
+from local import save_tools
 from request import basic_request
 
 
-def get_blog_time(item):
-    created_at = item['created_at']
-    time_str = time.strptime(created_at, '%a %b %d %H:%M:%S %z %Y')
-    end_time = str(time_str.tm_year) + '-' + str(time_str.tm_mon) + '-' + str(time_str.tm_mday)
-    pic_tag = time_tools.format_hour(time_str.tm_hour) + '-' + time_tools.format_hour(time_str.tm_min)
-    return end_time, pic_tag
-
-
-class Blog:
-    request_config = constants.config
-    target_uid = lck_constants.target_uid
+class Blog(SuperRequest, ABC):
     blog_value = constants.blog
     blog_image_value = constants.blog_image
 
     loop_length = 1
     start_page = 1
     next_since_id_list = []
-
-    def get_headers(self, custom_headers=None):
-        cookie = self.request_config.get_cookie()
-        return self.request_config.get_headers(cookie, custom_headers)
 
     def request_blog(self, page, since_id):
         print('start request blog')
@@ -49,10 +36,11 @@ class Blog:
         }
         return basic_request.basic_request_get(request_url, headers=self.get_headers(custom_headers))
 
-    def handle_blog_response(self, response):
+    def handel_response(self, response):
+        super().handel_response(response)
         print('handel blog response')
         data = None if response is None else response.get(constants.key_data)
-        if response is None or data is None:
+        if data is None:
             return
         since_id = data[constants.key_since_id]
         self.next_since_id_list.append(since_id)
@@ -62,7 +50,7 @@ class Blog:
             if pic_ids is None or len(pic_ids) <= 0:
                 continue
             pic_info_list = item[constants.key_pic_info_list]
-            end_time, pic_tag = get_blog_time(item)
+            end_time, pic_tag = super.get_blog_time(item)
             for pic_id in pic_ids:
                 pic_detail = pic_info_list[pic_id]
                 if pic_detail is None:
@@ -82,17 +70,17 @@ class Blog:
                 time_tools.random_time_sleep(1, 4)
                 time_tools.print_format_time('download end')
 
-    def loop_request_blog(self):
+    def loop_request(self):
         for i in range(self.loop_length):
             time_tools.print_format_time('request start')
             length = len(self.next_since_id_list)
             since_id = None if length == 0 else self.next_since_id_list[length - 1]
             response = self.request_blog(i + self.start_page, since_id)
-            self.handle_blog_response(response)
+            self.handel_response(response)
             if not save_tools.download_blog_image and self.loop_length > 1:
                 time_tools.random_time_sleep(8, 16)
             time_tools.print_format_time('request end')
 
-    def main_blog_request(self):
-        time_tools.duration_time(self.loop_request_blog)
+    def main_request(self):
+        super().main_request()
         save_tools.save_blog_params(self.start_page, self.loop_length, self.next_since_id_list)
