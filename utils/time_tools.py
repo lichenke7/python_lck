@@ -3,7 +3,7 @@ import time
 
 
 def random_time_sleep(start, end):
-    random_num = random.randint(start, start)
+    random_num = random.randint(start, end)
     time.sleep(random_num)
 
 
@@ -25,3 +25,8 @@ def strftime():
 
 def format_hour(hour):
     return str(hour) if hour > 9 else '0' + str(hour)
+
+
+def get_timestamp():
+    t = time.time()
+    return int(round(t * 1000))
