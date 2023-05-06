@@ -39,12 +39,13 @@ comments = {
 # ----------------------------------------report a bad msg or a bad comment---------------------------------------------
 # TODO
 report = {
-
+    'method': 'post',
+    'url': statues_url + 'buildComments',
 }
 
 # -------------------------------------------sign super topic-----------------------------------------------------------
 # TODO
 sign_topic = {
     'method': 'get',
-    'url': lck_constants.sign_topic_url
+    'url': lck_constants.report_profile
 }

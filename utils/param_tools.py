@@ -68,3 +68,9 @@ def get_sign_topic_params(url, user_agent, topic_id):
               'lang': 'zh-cn', 'plat': 'MacIntel', 'ua': user_agent, 'screen': '1440*900', '__rnd': str(time)}
 
     return handle_common_params(url, params)
+
+
+# category
+# refer: https://service.account..com/reportspam?rid=&type=3&from=1FFFF96039
+def get_report_params(report_uid, category, tag_id):
+    print('report user')
